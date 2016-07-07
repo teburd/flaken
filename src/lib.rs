@@ -49,10 +49,6 @@ impl MonteFlake {
     /// Set the epoch of a MonteFlake generator
     pub fn epoch(mut self, epoch: u64) -> MonteFlake {
         self.epoch = epoch;
-        if self.epoch < self.start_ts {
-            self.start_ts = self.epoch;
-            self.start_instant = Instant::now();
-        }
         self
     }
 
