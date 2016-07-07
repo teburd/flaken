@@ -3,7 +3,7 @@ name = "monteflake"
 description = "Configurable bitwidth snowflake id generator, encoder, decoder"
 license = "MIT"
 repository = "https://github.com/bfrog/monteflake"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Tom Burdick <thomas.burdick@gmail.com>"]
 keywords = ["snowflake", "flake", "id"]
 

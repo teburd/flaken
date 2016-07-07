@@ -1,5 +1,8 @@
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
+#[cfg(test)]
+use std::thread;
+
 /// MonteFlake creates a configurable Snowflake ID generator where the epoch
 /// and bitwidths may be adjusted to your liking from the defaults.
 /// MonteFlake id generation will always increase in value from the time
@@ -84,7 +87,6 @@ impl MonteFlake {
     /// sequence value
     /// the current time (ts) is the number of milliseconds passed since the unix epoch
     pub fn encode(&self, ts: u64, id: u64, seq: u64) -> u64 {
-        println!("pre-offset ts: {}, epoch: {}", ts, self.epoch);
         let ts0 = ts - self.epoch;
         let (_, id_shift, seq_shift) = self.bitwidths;
         let ts_mask = bitmask(id_shift+seq_shift);
@@ -100,7 +102,6 @@ impl MonteFlake {
         let ts_mask = bitmask(id_shift+seq_shift);
         let id_mask = bitmask(seq_shift) ^ ts_mask;
         let seq_mask = (bitmask(0) ^ ts_mask) ^ id_mask;
-        println!("ts: {:x}, id: {:x}, seq: {:x}", flake_id & ts_mask, flake_id & id_mask, flake_id & seq_mask);
         let ts = (flake_id & ts_mask) >> (id_shift+seq_shift);
         let id = (flake_id & id_mask) >> seq_shift;
         let seq = flake_id & seq_mask;
@@ -134,19 +135,22 @@ fn test_next() {
     let id1 = flake.next();
     let (ts0, id0, seq0) = flake.decode(id0);
     let (ts1, id1, seq1) = flake.decode(id1);
-    assert!((ts0-new_epoch) < 100); // fewer than 1000 milliseconds since the new epoch moment
+    assert!((ts0-new_epoch) < 1);
     assert_eq!(id0, 0);
     assert_eq!(seq0, 0);
-    assert!((ts1-new_epoch) < 100); // fewer than 1000 milliseconds since the new epoch moment
+    assert!((ts1-new_epoch) < 1);
     assert_eq!(id1, 0);
     assert_eq!(seq1, 1);
     let mut flake1 = flake.id(100);
     let id2 = flake1.next();
     let (ts2, id2, seq2) = flake1.decode(id2);
-    assert!((ts2-new_epoch) < 100); // fewer than 1000 milliseconds since the new epoch moment
+    assert!((ts2-new_epoch) < 1);
     assert_eq!(id2, 100);
     assert_eq!(seq2, 2);
-
+    thread::sleep(Duration::from_millis(10));
+    let id3 = flake1.next();
+    let (ts3, id3, seq3) = flake1.decode(id3);
+    assert!((ts3-new_epoch) >= 10);
+    assert_eq!(id3, 100);
+    assert_eq!(seq3, 0);
 }
-
-
