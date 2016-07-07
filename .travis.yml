@@ -1,0 +1,31 @@
+language: rust
+
+cache:
+  apt: true
+  directories:
+    - target/debug/deps
+    - target/debug/build
+
+script:
+  - cargo build --verbose
+  - cargo test --verbose
+  - cargo doc --no-deps
+
+after_success: |
+  [ $TRAVIS_RUST_VERSION = stable ] &&
+  wget https://github.com/SimonKagstrom/kcov/archive/master.tar.gz &&
+  tar xzf master.tar.gz && mkdir kcov-master/build && cd kcov-master/build && cmake .. && make && make install DESTDIR=../tmp && cd ../.. &&
+  ls target/debug &&
+  ./kcov-master/tmp/usr/local/bin/kcov --coveralls-id=$TRAVIS_JOB_ID --exclude-pattern=/.cargo target/kcov target/debug/monteflake-* &&
+  [ $TRAVIS_PULL_REQUEST = false ] &&
+  { [ "$TRAVIS_TAG" != "" ] || [ "$TRAVIS_BRANCH" == "master" ]; } &&
+  cargo doc --no-deps &&
+  ./.travis/docs.sh &&
+  echo "\nDocs published.\n"
+
+env:
+  global:
+    secure: FaG8PY1728TYFLYYz0VqqEuK1Gn8jjf3n44d1imMCNikHpQWqu4c/LY/isxB40eMLQOoS6l92Gq1T3ZADhVp9fZb/YGK1MiP5CmOOa1DLgMWpUPSx37HEPSmOLj9Bwtdfb/Jkro0k60DJEcOMNbXEyEhVNfmfQMm+3IgdG1tP9t2Zs8tH6HVgDLLWMRuPkenf81mn8d/NG+065/eb4wTxiR7gjAbiz4ehkaeWlL11IPf8YYdHAUx5n2w4omLO3hBg83xnTj8IqLvcyNJAsE98kprdXxjFrW3wr78yGBZGVTrSLgOZl64HyM951b0FPb6cmWf4mmfWLyhL+MytQ3VTxNW9aEKJBNPWRimAhpHpxObzIlzVrhQEOZr/Vd31JFXnJA1jf0XtJ8cbx5KBvlfTohuLj79KkiYRtKfKLzaW+XO88sjex66+E5HzrDoBDk60xxQ2iA7buo4UckjP1W6zZo/nNWFBMGA1JrxU722hErTb5kgQVTBJc1sBYYKBEN63KJSr57gdXaEsMpe+DGRvSC+v3BbeZ6nLAsyMd478fGJ5olEvUhVazAXKXklmiLsQ/YPfoDUlMMuoha93Iy8CG3EMJy7HaNNS9Up5tyGo3fl5NmevsKm2hSztGZn4z/yrZVHKQCB8okSMkyuqyS8v+h0+tJjSREpFEIV6fO6FQQ=
+
+notifications:
+  email: false
