@@ -1,14 +1,46 @@
+//! MonteFlake is a configurable Snowflake ID generator where the epoch
+//! and bitwidths may be adjusted to your liking from the defaults.
+//! ID generation from an instantiated generator will always increase in value.
+//! If a ID generator is created after a clock moves back from previously
+//! created IDs conflicting ID values are possible, otherwise clock changes do
+//! not affect ID generation.
+//!
+//! # Encode and decode example
+//!
+//! ```
+//! use std::time;
+//! use monteflake::MonteFlake;
+//!
+//! let ts = time::SystemTime::now().duration_since(time::UNIX_EPOCH).unwrap();
+//! let ts_ms = ts.as_secs()*1000 + (ts.subsec_nanos() as u64)/1000000;
+//! let mf = MonteFlake::new(0);
+//! let id = mf.encode(ts_ms, 10, 100);
+//! let (ts0, node0, seq0) = mf.decode(id);
+//! assert_eq!(ts0, ts_ms);
+//! assert_eq!(node0, 10);
+//! assert_eq!(seq0, 100);
+//! ```
+//!
+//! # ID generation example
+//!
+//! ```
+//! use monteflake::MonteFlake;
+//!
+//! let mut mf = MonteFlake::new(0).epoch(0).bitwidths(40, 10);
+//! let id0 = mf.next();
+//! let (ts0, node0, seq0) = mf.decode(id0);
+//! assert!(ts0 > 0);
+//! assert_eq!(node0, 0);
+//! assert_eq!(seq0, 0);
+//! ```
+
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
 #[cfg(test)]
 use std::thread;
 
-/// MonteFlake creates a configurable Snowflake ID generator where the epoch
-/// and bitwidths may be adjusted to your liking from the defaults.
-/// MonteFlake id generation will always increase in value from the time
-/// its instantiated. No other guarantees are made. If a MonteFlake generator
-/// is created after a clock moves back from other MonteFlake generated ids
-/// conflicting ID values are entirely possible.
+
+/// MonteFlake ID generator, encoder, and decoder
 pub struct MonteFlake {
     id: u64,
     epoch: u64,
@@ -30,8 +62,7 @@ impl AsMillis for Duration {
 }
 
 impl MonteFlake {
-    /// Build a new monteflake with default options
-    /// id: 0
+    /// Build a new monteflake with the given node id and other default options
     /// epoch: 2013-01-01T00:00:00Z in milliseconds since the unix epoch
     /// bitwidths (42 timestamp bits, 10 id bits, 12 sequence bits)
     pub fn new(id: u64) -> MonteFlake {
@@ -83,10 +114,11 @@ impl MonteFlake {
         id
     }
 
-    /// encode into an id the current time, id of the generator (machine, node, shard), and
-    /// sequence value
-    /// the current time (ts) is the number of milliseconds passed since the unix epoch
+    /// Encode into a monteflake id the given id, current time, and sequence value
+    ///
+    /// The current time (ts) is the number of milliseconds passed since the unix epoch
     pub fn encode(&self, ts: u64, id: u64, seq: u64) -> u64 {
+        assert!(ts >= self.epoch);
         let ts0 = ts - self.epoch;
         let (_, id_shift, seq_shift) = self.bitwidths;
         let ts_mask = bitmask(id_shift+seq_shift);
@@ -95,8 +127,11 @@ impl MonteFlake {
         ((ts0 << (id_shift + seq_shift)) & ts_mask) | ((id << seq_shift) & id_mask) | (seq & seq_mask)
     }
 
-    /// decode from an encoded id the time, id of the generator, and sequence id
-    /// the current time (ts) is the number of milliseconds passed since the unix epoch
+    /// Decode from an encoded id the time, id of the generator, and sequence id
+    ///
+    /// The current time (ts) is the number of milliseconds passed since the unix epoch
+    ///
+    ///
     pub fn decode(&self, flake_id: u64) -> (u64, u64, u64) {
         let (_, id_shift, seq_shift) = self.bitwidths;
         let ts_mask = bitmask(id_shift+seq_shift);
@@ -123,7 +158,7 @@ fn test_bitmask() {
 fn test_encode_decode() {
     let flake = MonteFlake::new(0);
     let vals = (13+flake.start_ts,24,81);
-    let id = flake.encode(vals.0, vals.1, vals.2); 
+    let id = flake.encode(vals.0, vals.1, vals.2);
     assert_eq!(flake.decode(id), vals);
 }
 
