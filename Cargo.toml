@@ -2,7 +2,9 @@
 name = "flaken"
 description = "Configurable bitwidth snowflake id generator, encoder, decoder"
 license = "MIT"
-repository = "https://github.com/bfrog/monteflake"
-version = "0.2.0"
+homepage = "https://github.com/bfrog/flaken"
+repository = "https://github.com/bfrog/flaken"
+documentation = "https://bfrog.github.io/flaken"
+version = "0.2.1"
 authors = ["Tom Burdick <thomas.burdick@gmail.com>"]
 keywords = ["snowflake", "flake", "id", "distributed"]
