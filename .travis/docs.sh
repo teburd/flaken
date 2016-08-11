@@ -1,30 +1,33 @@
 #!/bin/bash
 
-set -o errexit
+set -o errexit -o nounset
 
-git clone --branch gh-pages "https://$TOKEN@github.com/${TRAVIS_REPO_SLUG}.git" deploy_docs
-cd deploy_docs
-
-git config user.name "Thomas Burdick"
-git config user.email "thomas.burdick@gmail.com"
-
-if [ "$TRAVIS_TAG" = ""  ]; then
-    rm -rf master
-    mv ../target/doc ./master
-    echo "<meta http-equiv=refresh content=0;url=monteflake/index.html>" > ./master/index.html
-else
-    rm -rf $TRAVIS_TAG
-    mv ../target/doc ./$TRAVIS_TAG
-    echo "<meta http-equiv=refresh content=0;url=monteflake/index.html>" > ./$TRAVIS_TAG/index.html
-
-    latest=$(echo * | tr " " "\n" | sort -V -r | head -n1)
-    if [ "$TRAVIS_TAG" = "$latest" ]; then
-
-        echo "<meta http-equiv=refresh content=0;url=$latest/monteflake/index.html>" > index.html
-    fi
+if [ "$TRAVIS_PULL_REQUEST" != "false" ]
+then
+    echo "This commit was part of a pull request not a merge to master. Not publishing docs"
+    exit 0
 fi
 
+if [ "$TRAVIS_BRANCH" != "master" ]
+then
+    echo "This commit was made against the $TRAVIS_BRANCH and not the master! Not publishing docs"
+    exit 0
+fi
+
+rev=$(git rev-parse --short HEAD)
+
+cd target/doc
+
+echo '<meta http-equiv="refresh" content="0; url=flaken/index.html">' > index.html
+
+git init
+git config user.name "Tom Burdick"
+git config user.email "thomas.burdick@gmail.com"
+
+git remote add upstream "https://$GH_TOKEN@github.com/bfrog/flaken.git"
+git fetch upstream
+git reset upstream/gh-pages
 
 git add -A .
-git commit -m "rebuild pages at ${TRAVIS_COMMIT}"
-git push --quiet origin gh-pages
+git commit -m "rebuild pages at ${rev}"
+git push -q upstream HEAD:gh-pages
