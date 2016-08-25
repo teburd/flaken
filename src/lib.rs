@@ -63,7 +63,7 @@ impl AsMillis for Duration {
 }
 
 impl Flaken {
-    /// Build a new monteflake with the given node id and other default options
+    /// Build a new flake id with the given node id and other default options
     /// node: 0
     /// epoch: 2013-01-01T00:00:00Z in milliseconds since the unix epoch
     /// bitwidths (42 timestamp bits, 10 id bits, 12 sequence bits)
@@ -116,7 +116,7 @@ impl Flaken {
         id
     }
 
-    /// Encode into a monteflake id the given id, current time, and sequence value
+    /// Encode into a flake id the given id, current time, and sequence value
     ///
     /// The current time (ts) is the number of milliseconds passed since the unix epoch
     pub fn encode(&self, ts: u64, node: u64, seq: u64) -> u64 {
