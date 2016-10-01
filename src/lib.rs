@@ -42,6 +42,7 @@ use std::thread;
 
 
 /// Flaken ID generator, encoder, and decoder
+#[derive(Debug)]
 pub struct Flaken {
     node: u64,
     epoch: u64,

@@ -5,6 +5,6 @@ license = "MIT"
 homepage = "https://github.com/bfrog/flaken"
 repository = "https://github.com/bfrog/flaken"
 documentation = "https://bfrog.github.io/flaken"
-version = "0.2.1"
+version = "0.2.2"
 authors = ["Tom Burdick <thomas.burdick@gmail.com>"]
 keywords = ["snowflake", "flake", "id", "distributed"]
