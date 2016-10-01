@@ -47,11 +47,11 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-5' class='srclink' href='../src/flaken/src/lib.rs.html#45-53' title='goto source code'>[src]</a></span></h1>
+               </span><a id='src-17' class='srclink' href='../src/flaken/src/lib.rs.html#46-54' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct Flaken {
     // some fields omitted
 }</pre><div class='docblock'><p>Flaken ID generator, encoder, and decoder</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../flaken/struct.Flaken.html' title='flaken::Flaken'>Flaken</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-19' class='srclink' href='../src/flaken/src/lib.rs.html#65-147' title='goto source code'>[src]</a></span></h3>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../flaken/struct.Flaken.html' title='flaken::Flaken'>Flaken</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-31' class='srclink' href='../src/flaken/src/lib.rs.html#66-148' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.default' class='method'><code>fn <a href='#method.default' class='fnname'>default</a>() -&gt; <a class='struct' href='../flaken/struct.Flaken.html' title='flaken::Flaken'>Flaken</a></code></h4>
 <div class='docblock'><p>Build a new flake id with the given node id and other default options
 node: 0
@@ -74,6 +74,9 @@ the timestamp value if enough time has elapsed to matter</p>
 </div><h4 id='method.decode' class='method'><code>fn <a href='#method.decode' class='fnname'>decode</a>(&amp;self, id: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a>, <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a>, <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>)</a></code></h4>
 <div class='docblock'><p>Decode from an encoded id the timestamp, node id, and sequence id
 The current time (ts) is the number of milliseconds passed since the unix epoch</p>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a> for <a class='struct' href='../flaken/struct.Flaken.html' title='flaken::Flaken'>Flaken</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-5' class='srclink' href='../src/flaken/src/lib.rs.html#45' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.fmt' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class='struct' href='https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html' title='core::fmt::Formatter'>Formatter</a>) -&gt; <a class='type' href='https://doc.rust-lang.org/nightly/core/fmt/type.Result.html' title='core::fmt::Result'>Result</a></code></h4>
+<div class='docblock'><p>Formats the value using the given formatter.</p>
 </div></div></section>
     <section id='search' class="content hidden"></section>
 

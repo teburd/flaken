@@ -235,6 +235,7 @@
 <span id="191">191</span>
 <span id="192">192</span>
 <span id="193">193</span>
+<span id="194">194</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! Flaken is a configurable Snowflake ID generator where the epoch</span>
 <span class='doccomment'>//! and bitwidths may be adjusted to your liking from the defaults.</span>
@@ -280,6 +281,7 @@
 
 
 <span class='doccomment'>/// Flaken ID generator, encoder, and decoder</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Flaken</span> {
     <span class='ident'>node</span>: <span class='ident'>u64</span>,
     <span class='ident'>epoch</span>: <span class='ident'>u64</span>,
